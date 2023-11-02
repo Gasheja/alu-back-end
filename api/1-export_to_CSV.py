@@ -1,5 +1,5 @@
 #!/usr/bin/python3
-"""To have a TODO list"""
+"""get TODO list"""
 
 import csv
 import json
