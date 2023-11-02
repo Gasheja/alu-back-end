@@ -1,6 +1,6 @@
 #!/usr/bin/python3
 """
-a Python script that, using this REST API,
+A Python script that, using this REST API,
 https://jsonplaceholder.typicode.com/path/?query#fragments
 for a given employee ID, returns information about his/her
 TODO list progress.
@@ -27,38 +27,42 @@ if __name__ == "__main__":
     import sys
     import urllib.request
 
-    """
-    format the employees id with the url
-    https://jsonplaceholder.typicode.com/users/{employees_id}
-    after getting it from the command line using the sys module
-    """
+    # Format the employee ID with the URL
     employee_id = sys.argv[1]
     url1 = f"https://jsonplaceholder.typicode.com/users/{employee_id}/todos"
     url2 = f"https://jsonplaceholder.typicode.com/users/{employee_id}/"
-    # create a request objects at first using urllib.request.Request()
+    
+    # Create request objects using urllib.request.Request()
     req_object1 = urllib.request.Request(url1, method="GET")
     req_object2 = urllib.request.Request(url2, method="GET")
-    # fetch the resources using the request objects and the function
-    # urllib.request.urlopen
+    
+    # Fetch the resources using urllib.request.urlopen
     with urllib.request.urlopen(req_object1) as response_object1:
         response1 = json.load(response_object1)
     with urllib.request.urlopen(req_object2) as response_object2:
         response2 = json.load(response_object2)
-    # create an empty list to store completed tasks
+    
+    # Create an empty list to store completed tasks
     completed_tasks = []
-    # iterate through all task to get task with boolean value true
+    
+    # Iterate through all tasks to get tasks with a boolean value of True
     for task in response1:
         if task['completed'] is not True:
             continue
         completed_tasks.append(task)
-    # get length for completed task and all task (complete and incomplete)
+    
+    # Get the length of completed tasks and all tasks (complete and incomplete)
     no_of_comptasks = len(completed_tasks)
     totalno_of_task = len(response1)
-    # get the employee name
+    
+    # Get the employee name
     employee_name = response2["name"]
-    # display the required format in the docs
+    
+    # Display the required format
     print(f"Employee {employee_name} is done with tasks({no_of_comptasks}/\
 {totalno_of_task}):")
+    
     for comp_tasks in completed_tasks:
-        print(f"\t {comp_tasks['title']}")
+        print(f"\t{comp_tasks['title']}")
+
 
