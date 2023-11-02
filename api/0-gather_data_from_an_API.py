@@ -4,21 +4,36 @@
 import json
 import requests
 import sys
+
 if __name__ == "__main__":
-    link = "https://jsonplaceholder.typicode.com/users/{}".format(sys.argv[1])
-    res = requests.get(link)
-    user = json.loads(res.text)
+    if len(sys.argv) != 2:
+        print("Usage: python3 script.py <employee_id>")
+        sys.exit(1)
+
     num = sys.argv[1]
-    link = "https://jsonplaceholder.typicode.com/users/{}/todos".format(num)
-    res = requests.get(link)
-    todos = json.loads(res.text)
-    done = []
-    for i in todos:
-        if i['completed']:
-            done.append(i)
-    print("Employee {} is done with tasks({}/{}):".format(
-                                                          user['name'],
-                                                          len(done),
-                                                          len(todos)))
-    for i in done:
-        print("\t {}".format(i["title"]))
+    link_user = f"https://jsonplaceholder.typicode.com/users/{num}"
+    res_user = requests.get(link_user)
+
+    if res_user.status_code != 200:
+        print(f"Error: Unable to fetch data for employee {num}")
+        sys.exit(1)
+
+    user = json.loads(res_user.text)
+
+    link_todos = f"https://jsonplaceholder.typicode.com/users/{num}/todos"
+    res_todos = requests.get(link_todos)
+
+    if res_todos.status_code != 200:
+        print(f"Error: Unable to fetch TODO data for employee {num}")
+        sys.exit(1)
+
+    todos = json.loads(res_todos.text)
+
+    all_tasks = [i for i in todos]
+    completed_tasks = [i for i in todos if i['completed']]
+
+    print(f"Employee {user['name']} is done with tasks({len(completed_tasks)}/{len(all_tasks)}):")
+    for task in all_tasks:
+        status = "✓" if task['completed'] else "✗"
+        print(f"\t{status} {task['title']}")
+
